@@ -6,7 +6,6 @@ import DB_URL
 import SECRET_JWT
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.futuris.di.mainModule
-import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
@@ -26,6 +25,8 @@ import io.ktor.response.respond
 import io.ktor.response.respondRedirect
 import io.ktor.response.respondText
 import io.ktor.routing.*
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import org.jetbrains.exposed.sql.Database
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
@@ -34,48 +35,47 @@ import org.koin.ktor.ext.inject
 private val tokenizer = LoginInteractor.KtorJWT(SECRET_JWT)
 
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun main() {
+    initDB()
+    embeddedServer(Netty, 8080) {
 
-@Suppress("unused")
-@kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
+        install(Koin) { modules(mainModule) }
 
-    install(Koin) { modules(mainModule) }
+        val tokenizer = LoginInteractor.KtorJWT(SECRET_JWT)
 
-    val tokenizer = LoginInteractor.KtorJWT(SECRET_JWT)
-
-    install(Authentication) {
-        jwt {
-            verifier(tokenizer.verifier)
-            validate {
-                UserIdPrincipal(it.payload.getClaim("name").asString())
+        install(Authentication) {
+            jwt {
+                verifier(tokenizer.verifier)
+                validate {
+                    UserIdPrincipal(it.payload.getClaim("name").asString())
+                }
             }
         }
-    }
 
-    install(ContentNegotiation) {
-        jackson {
-            enable(SerializationFeature.INDENT_OUTPUT)
+        install(ContentNegotiation) {
+            jackson {
+                enable(SerializationFeature.INDENT_OUTPUT)
+            }
         }
-    }
 
-    install(CORS) {
-        method(HttpMethod.Options)
-        method(HttpMethod.Get)
-        method(HttpMethod.Post)
-        method(HttpMethod.Put)
-        method(HttpMethod.Delete)
-        method(HttpMethod.Patch)
-        header(HttpHeaders.Authorization)
-        allowCredentials = true
-        anyHost()
-    }
+        install(CORS) {
+            method(HttpMethod.Options)
+            method(HttpMethod.Get)
+            method(HttpMethod.Post)
+            method(HttpMethod.Put)
+            method(HttpMethod.Delete)
+            method(HttpMethod.Patch)
+            header(HttpHeaders.Authorization)
+            allowCredentials = true
+            anyHost()
+        }
 
-    install(StatusPages) {
-        exception<ApplicationExceptions> { call.processError(it) }
-    }
+        install(StatusPages) {
+            exception<ApplicationExceptions> { call.processError(it) }
+        }
 
-    routing { installRoutes() }
+        routing { installRoutes() }
+    }
 }
 
 private fun Routing.installRoutes() {
