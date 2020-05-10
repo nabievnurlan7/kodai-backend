@@ -71,7 +71,7 @@ fun main() {
         }
 
         routing { installRoutes() }
-    }
+    }.start(wait = true)
 }
 
 private fun Routing.installRoutes() {
