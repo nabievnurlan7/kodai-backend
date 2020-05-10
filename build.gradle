@@ -30,6 +30,10 @@ repositories {
     maven { url "https://dl.bintray.com/kotlin/exposed" }
 }
 
+ext {
+    koin_version = '2.0.1'
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
@@ -42,6 +46,12 @@ dependencies {
     implementation "io.ktor:ktor-jackson:$ktor_version"
     implementation "io.ktor:ktor-auth-jwt:$ktor_version"
     implementation 'org.jetbrains.exposed:exposed:0.8.5'
+
+    implementation "org.koin:koin-core:$koin_version"
+    implementation "org.koin:koin-core-ext:$koin_version"
+    implementation "org.koin:koin-ktor:$koin_version"
+    testImplementation "org.koin:koin-test:$koin_version"
+    implementation "org.koin:koin-java:$koin_version"
 
     implementation group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
