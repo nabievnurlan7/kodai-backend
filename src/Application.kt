@@ -1,9 +1,5 @@
 package com.futuris
 
-import APP_NAME
-import DB_DRIVER
-import DB_URL
-import SECRET_JWT
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.futuris.di.mainModule
 import io.ktor.application.ApplicationCall

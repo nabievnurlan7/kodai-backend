@@ -1,3 +1,5 @@
+package com.futuris
+
 const val APP_NAME = "Kodai App"
 
 const val SECRET_JWT = "secret-for-jwt"
