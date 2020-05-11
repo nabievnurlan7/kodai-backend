@@ -1,5 +1,6 @@
 package com.futuris
 
+import com.google.gson.Gson
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
@@ -30,7 +31,10 @@ class QuestionRepository {
         }
     }
 
-    fun getInterviewQuestions(quantity: Int): List<QuestionInterview> = interviewQuestions.shuffled().take(quantity)
+    fun getInterviewQuestions(quantity: Int): String {
+        val list = interviewQuestions.shuffled().take(quantity)
+        return Gson().toJson(list)
+    }
 
     data class QuestionInterview(
         val id: Int,

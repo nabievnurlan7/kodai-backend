@@ -85,10 +85,7 @@ private fun Routing.installRoutes() {
     route("/questions") {
         get {
             val quantity = call.parameters.getOrFail<Int>(QUESTIONS_QUANTITY)
-
-            call.respond(mapOf("questions" to synchronized(questionRepository.getInterviewQuestions(quantity)) {
-                questionRepository.getInterviewQuestions(quantity).toList()
-            }))
+            call.respondText((questionRepository.getInterviewQuestions(quantity)))
         }
     }
 }
