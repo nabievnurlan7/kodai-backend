@@ -33,7 +33,7 @@ private val tokenizer = LoginInteractor.KtorJWT(SECRET_JWT)
 
 fun main() {
     initDB()
-    embeddedServer(Netty, 8080) {
+    embeddedServer(Netty, 8090) {
 
         install(Koin) { modules(mainModule) }
 
