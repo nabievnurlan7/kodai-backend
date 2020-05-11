@@ -97,9 +97,9 @@ private fun Routing.installRoutes() {
         }
     }
 
-    route("/data") {
+    route("/questions") {
         get {
-            call.respond(mapOf("data" to synchronized(dataInteractor.getInterviewQuestions()) {
+            call.respond(mapOf("questions" to synchronized(dataInteractor.getInterviewQuestions()) {
                 dataInteractor.getDataList().toList()
             }))
         }
