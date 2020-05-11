@@ -100,7 +100,7 @@ private fun Routing.installRoutes() {
     route("/questions") {
         get {
             call.respond(mapOf("questions" to synchronized(dataInteractor.getInterviewQuestions()) {
-                dataInteractor.getDataList().toList()
+                dataInteractor.getInterviewQuestions().toList()
             }))
         }
 
