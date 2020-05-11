@@ -7,7 +7,6 @@ import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.UserIdPrincipal
-import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.jwt
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
@@ -16,20 +15,21 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.jackson.jackson
-import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.response.respondRedirect
 import io.ktor.response.respondText
-import io.ktor.routing.*
+import io.ktor.routing.Routing
+import io.ktor.routing.get
+import io.ktor.routing.route
+import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.util.getOrFail
 import org.jetbrains.exposed.sql.Database
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
 
 
 private val tokenizer = LoginInteractor.KtorJWT(SECRET_JWT)
-
 
 fun main() {
     initDB()
@@ -75,45 +75,23 @@ fun main() {
 }
 
 private fun Routing.installRoutes() {
-    val loginInteractor = LoginInteractor()
-    val dataInteractor: DummyDataInteractor by inject()
+    val questionRepository: QuestionRepository by inject()
 
 
     get("/") {
         call.respondText(APP_NAME, contentType = ContentType.Text.Plain)
     }
 
-    get("/html") {
-        call.respondText(dataInteractor.getHtml(), contentType = ContentType.Text.Html)
-    }
-
-    post("/login") {
-        val post = call.receive<LoginInteractor.LoginRegister>()
-
-        if (loginInteractor.checkCredentials(post)) {
-            call.respondRedirect("/", permanent = false)
-        } else {
-            throw ApplicationExceptions.InvalidCredentialsException()
-        }
-    }
-
     route("/questions") {
         get {
-            call.respond(mapOf("questions" to synchronized(dataInteractor.getInterviewQuestions()) {
-                dataInteractor.getInterviewQuestions().toList()
-            }))
-        }
+            val quantity = call.parameters.getOrFail<Int>(QUESTIONS_QUANTITY)
 
-        authenticate {
-            post {
-                val post = call.receive<DummyDataInteractor.PostData>()
-                dataInteractor.putData(post.data.text)
-                call.respond(mapOf("OK" to true))
-            }
+            call.respond(mapOf("questions" to synchronized(questionRepository.getInterviewQuestions(quantity)) {
+                questionRepository.getInterviewQuestions(quantity).toList()
+            }))
         }
     }
 }
-
 
 private suspend fun ApplicationCall.respondCustom(questions: Any) {
     respond(mapOf("questions" to questions))

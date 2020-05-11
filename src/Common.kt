@@ -12,3 +12,4 @@ const val KZ_LANG = "kk"
 
 const val CODE_PARAM = "code"
 const val LANG_PARAM = "lang"
+const val QUESTIONS_QUANTITY = "quantity"
