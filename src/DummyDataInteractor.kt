@@ -3,7 +3,7 @@ package com.futuris
 import com.google.gson.Gson
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
@@ -28,7 +28,8 @@ class DummyDataInteractor {
     fun getInterviewQuestions(): List<QuestionInterview> {
         var questions = mutableListOf<QuestionInterview>()
         transaction {
-            val result = QuestionDao.selectAll().orderBy(QuestionDao.id, true)
+            val result =
+                QuestionDao.select { QuestionDao.type.eq(QUESTION_TYPE_INTERVIEW) }.orderBy(QuestionDao.id, true)
             val arrayList = ArrayList<QuestionInterview>()
             result.forEach {
                 arrayList.add(
@@ -42,7 +43,7 @@ class DummyDataInteractor {
             //json = Gson().toJson(arrayList)
             questions = arrayList
         }
-        return questions.take(10)
+        return questions.shuffled().take(10)
     }
 
 
@@ -773,5 +774,10 @@ class DummyDataInteractor {
                 }
             }
         }.toString()
+    }
+
+    companion object {
+        private const val QUESTION_TYPE_INTERVIEW = 1
+        private const val QUESTION_TYPE_QUIZ = 2
     }
 }
