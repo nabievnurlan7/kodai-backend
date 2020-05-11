@@ -3,9 +3,47 @@ package com.futuris
 import com.google.gson.Gson
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 class DummyDataInteractor {
+
+    data class Question(
+        val id: Int,
+        val question: String,
+        val type: Int,
+        val var1: String,
+        val var2: String,
+        val var3: String,
+        val var4: String,
+        val correct: Int
+    )
+
+    data class QuestionInterview(
+        val id: Int,
+        val question: String
+    )
+
+    fun getInterviewQuestions(): String {
+        var json = ""
+        transaction {
+            val result = QuestionDao.selectAll().orderBy(QuestionDao.id, true)
+            val arrayList = ArrayList<QuestionInterview>()
+            result.forEach {
+                arrayList.add(
+                    QuestionInterview(
+                        id = it[QuestionDao.id],
+                        question = it[QuestionDao.question]
+                    )
+                )
+            }
+
+            json = Gson().toJson(arrayList)
+        }
+        return json
+    }
+
 
     data class Data(val text: String)
 
