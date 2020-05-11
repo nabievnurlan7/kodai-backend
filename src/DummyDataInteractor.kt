@@ -25,8 +25,8 @@ class DummyDataInteractor {
         val question: String
     )
 
-    fun getInterviewQuestions(): String {
-        var json = ""
+    fun getInterviewQuestions(): List<QuestionInterview> {
+        var questions = mutableListOf<QuestionInterview>()
         transaction {
             val result = QuestionDao.selectAll().orderBy(QuestionDao.id, true)
             val arrayList = ArrayList<QuestionInterview>()
@@ -39,9 +39,10 @@ class DummyDataInteractor {
                 )
             }
 
-            json = Gson().toJson(arrayList)
+            //json = Gson().toJson(arrayList)
+            questions = arrayList
         }
-        return json
+        return questions.take(10)
     }
 
 
