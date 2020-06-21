@@ -1,5 +1,6 @@
 package com.futuris
 
+import com.futuris.di.CrossDao
 import com.google.gson.Gson
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
@@ -28,8 +29,8 @@ class QuestionRepository {
     private fun getQuestionsId(tagId: Int): List<Int> {
         val arrayList = ArrayList<Int>()
         transaction {
-            val result = TagDao.select { TagDao.id.eq(tagId) }
-            result.forEach { arrayList.add(it[TagDao.questionId]) }
+            val result = CrossDao.select { CrossDao.tagId.eq(tagId) }
+            result.forEach { arrayList.add(it[CrossDao.questionId]) }
         }
 
         return arrayList
