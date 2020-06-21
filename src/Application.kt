@@ -84,7 +84,13 @@ private fun Routing.installRoutes() {
     route("/questions") {
         get {
             val quantity = call.parameters.getOrFail<Int>(QUESTIONS_QUANTITY)
-            call.respondText((questionRepository.getInterviewQuestions(quantity)))
+            val tagId = call.parameters.getOrFail<Int>(TAG)
+
+            if (tagId == 0) {
+                call.respondText((questionRepository.getInterviewQuestions(quantity)))
+            } else {
+                call.respondText((questionRepository.getInterviewQuestionsByTag(tagId, quantity)))
+            }
         }
     }
 
