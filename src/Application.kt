@@ -77,7 +77,6 @@ fun main() {
 private fun Routing.installRoutes() {
     val questionRepository: QuestionRepository by inject()
 
-
     get("/") {
         call.respondText(APP_NAME, contentType = ContentType.Text.Plain)
     }
@@ -86,6 +85,12 @@ private fun Routing.installRoutes() {
         get {
             val quantity = call.parameters.getOrFail<Int>(QUESTIONS_QUANTITY)
             call.respondText((questionRepository.getInterviewQuestions(quantity)))
+        }
+    }
+
+    route("/tags") {
+        get {
+            call.respondText(questionRepository.getTags())
         }
     }
 }
