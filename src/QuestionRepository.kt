@@ -38,15 +38,17 @@ class QuestionRepository {
 
     private fun getQuestionsByQueriedIds(questionIdList: List<Int>): ArrayList<QuestionInterview> {
         val arrayList = ArrayList<QuestionInterview>()
-        questionIdList.forEach {
-            val result = QuestionDao.select { QuestionDao.id.eq(it) }
-            result.firstOrNull {
-                arrayList.add(
-                        QuestionInterview(
-                                id = it[QuestionDao.id],
-                                question = it[QuestionDao.question]
-                        )
-                )
+        transaction {
+            questionIdList.forEach {
+                val result = QuestionDao.select { QuestionDao.id.eq(it) }
+                result.firstOrNull {
+                    arrayList.add(
+                            QuestionInterview(
+                                    id = it[QuestionDao.id],
+                                    question = it[QuestionDao.question]
+                            )
+                    )
+                }
             }
         }
 
