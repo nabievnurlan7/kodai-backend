@@ -1,4 +1,4 @@
-package com.futuris
+package com.futuris.question
 
 import org.jetbrains.exposed.sql.Table
 

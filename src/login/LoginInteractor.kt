@@ -1,4 +1,4 @@
-package com.futuris
+package com.futuris.login
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
@@ -18,9 +18,9 @@ class LoginInteractor {
     class User(val name: String, val password: String)
 
     private val users: MutableMap<String, User> = Collections.synchronizedMap(
-        listOf(User("test", "test"))
-            .associateBy { it.name }
-            .toMutableMap()
+            listOf(User("test", "test"))
+                    .associateBy { it.name }
+                    .toMutableMap()
     )
 
     fun checkCredentials(post: LoginRegister): Boolean {

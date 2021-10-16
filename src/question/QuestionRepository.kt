@@ -1,6 +1,6 @@
-package com.futuris
+package com.futuris.question
 
-import com.futuris.di.CrossDao
+import com.futuris.common.CrossDao
 import com.google.gson.Gson
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
@@ -43,10 +43,10 @@ class QuestionRepository {
                 val result = QuestionDao.select { QuestionDao.id.eq(it) }
                 result.firstOrNull {
                     arrayList.add(
-                            QuestionInterview(
-                                    id = it[QuestionDao.id],
-                                    question = it[QuestionDao.question]
-                            )
+                        QuestionInterview(
+                            id = it[QuestionDao.id],
+                            question = it[QuestionDao.question]
+                        )
                     )
                 }
             }
@@ -58,14 +58,14 @@ class QuestionRepository {
     private fun loadAndCacheQuestions() {
         transaction {
             val result =
-                    QuestionDao.select { QuestionDao.type.eq(QUESTION_TYPE_INTERVIEW) }.orderBy(QuestionDao.id, true)
+                QuestionDao.select { QuestionDao.type.eq(QUESTION_TYPE_INTERVIEW) }.orderBy(QuestionDao.id, true)
             val arrayList = ArrayList<QuestionInterview>()
             result.forEach {
                 arrayList.add(
-                        QuestionInterview(
-                                id = it[QuestionDao.id],
-                                question = it[QuestionDao.question]
-                        )
+                    QuestionInterview(
+                        id = it[QuestionDao.id],
+                        question = it[QuestionDao.question]
+                    )
                 )
             }
 
@@ -85,13 +85,13 @@ class QuestionRepository {
     }
 
     data class QuestionInterview(
-            val id: Int,
-            val question: String
+        val id: Int,
+        val question: String
     )
 
     data class Tag(
-            val id: Int,
-            val tagName: String
+        val id: Int,
+        val tagName: String
     )
 
     companion object {

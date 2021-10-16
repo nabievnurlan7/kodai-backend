@@ -1,8 +1,8 @@
-package com.futuris
+package common
 
-import io.ktor.application.ApplicationCall
-import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.response.*
 
 sealed class ApplicationExceptions(message: String) : RuntimeException(message) {
     class InvalidCredentialsException(message: String = "Invalid credentials") : ApplicationExceptions(message)

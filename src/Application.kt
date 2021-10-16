@@ -2,28 +2,25 @@ package com.futuris
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.futuris.di.mainModule
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.auth.Authentication
-import io.ktor.auth.UserIdPrincipal
-import io.ktor.auth.jwt.jwt
-import io.ktor.features.CORS
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.StatusPages
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.jackson.jackson
-import io.ktor.response.respond
-import io.ktor.response.respondText
+import com.futuris.job.JobRepository
+import com.futuris.login.LoginInteractor
+import com.futuris.question.QuestionRepository
+import common.ApplicationExceptions
+import common.processError
+import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.auth.jwt.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.jackson.*
+import io.ktor.response.*
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.route
 import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.util.getOrFail
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.util.*
 import org.jetbrains.exposed.sql.Database
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
@@ -76,6 +73,7 @@ fun main() {
 
 private fun Routing.installRoutes() {
     val questionRepository: QuestionRepository by inject()
+    val jobRepository: JobRepository by inject()
 
     get("/") {
         call.respondText(APP_NAME, contentType = ContentType.Text.Plain)
@@ -97,6 +95,12 @@ private fun Routing.installRoutes() {
     route("/tags") {
         get {
             call.respondText(questionRepository.getTags())
+        }
+    }
+
+    route("/jobs") {
+        get {
+            call.respondText(jobRepository.getJobs())
         }
     }
 }

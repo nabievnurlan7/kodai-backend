@@ -1,4 +1,4 @@
-package com.futuris.di
+package com.futuris.common
 
 import org.jetbrains.exposed.sql.Table
 
